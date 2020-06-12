@@ -1,0 +1,87 @@
+﻿@model  IEnumerable<Student>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<br />
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table table-bordered">
+    <tr>
+        <th class="col-md-1 text-center">Field Name</th>
+        <th class="col-md-2 text-center">Governorate Name</th>
+        <th class="col-md-3 text-center">Neighborhood Name</th>
+        <th class="col-md-2 text-center"> Student Name</th>
+        <th class="col-md-2 text-center">BirthDate</th>
+        <th class="col-md-2 text-center">Teacher Name</th>
+        <th class="col-md-3 text-center">Action</th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td class="col-md-1 text-center">
+        @Html.DisplayFor(modelItem => item.Field.Name)
+    </td>
+    <td class="col-md-2 text-center">
+        @Html.DisplayFor(modelItem => item.Governorate.Name)
+    </td>
+    <td class="col-md-2 text-center">
+        @Html.DisplayFor(modelItem => item.Neighborhood.Name)
+    </td>
+    <td class="col-md-2 text-center">
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td class="col-md-2 text-center">
+        @Html.TextBoxFor(modelItem => item.BirthDate, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control", @readonly = "true" })
+    </td>
+    <td class="col-md-2 text-center">
+        @foreach (var teacher in item.StudentTeachers)
+        {
+            @Html.TextBoxFor(modelItem => teacher.Teacher.Name)
+        }
+    </td>
+    <td class="col-md-3 text-center">
+        @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <a class=" delete-confirm deleteButton" data-delete-id="@item.ID"> Delete</a>
+        }
+    </td>
+</tr>
+}
+
+</table>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+<script type="text/javascript">
+    AddAntiForgeryToken = function (data) {
+        return data;
+    };
+    $(".deleteButton").on("click", function () {
+      
+        var parentRow = $(this).parents("tr:first");
+                $.post(
+                    '@Url.Action("Delete")',
+                    AddAntiForgeryToken({ id: $(this).attr('data-delete-id') }))
+        
+                    .done(function () {
+                        
+                       parentRow.fadeOut('fast', function () {
+                           parentRow.remove();
+                       });
+                   }).fail(function (data) {
+                       alert("error");
+                   });
+                return false;
+            });
+
+</script>
+}

@@ -1,0 +1,159 @@
+﻿@model  Student
+
+@{
+    ViewBag.Title = "Edit";
+
+}
+
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Editform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Student</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GovernorateId, "Governorate", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("GovernorateId", null, htmlAttributes: new { @class = "form-control", @id = "addNeighborhood" })
+                @Html.ValidationMessageFor(model => model.GovernorateId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NeighborhoodId, "Neighborhood", htmlAttributes: new { @class = "control-label col-md-2", @id = "deNeighborhood" })
+            <div class="col-md-10">
+                @Html.HiddenFor(a => a.NeighborhoodId)
+                @Html.DropDownList("NeighborhoodId", null, htmlAttributes: new { @class = "form-control", @id = "delNeighborhood" })
+                @Html.ValidationMessageFor(model => model.NeighborhoodId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FieldId, "Field", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("FieldId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FieldId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @*//@Html.LabelFor(model => model, "TeacherId", htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label for="StudentTeacher" class="control-label col-md-2">Student Teacher</label>
+            <div class="col-md-10">
+                @Html.DropDownList("StudentTeacher",
+                    (SelectList)ViewBag.TeacherId,
+                    "Select Teacher",
+                    new { @class = "form-control" })
+                @Html.ValidationMessage("StudentTeacher", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $("#addNeighborhood").change(function () {
+                if ($(this).val() == "1") {
+                    $("#delNeighborhood").show();
+                    $("#deNeighborhood").show();
+                } else {
+                    $("#delNeighborhood").hide();
+                    $("#deNeighborhood").hide();
+                }
+            });
+        });
+        //$(document).ready(function () {
+        //    console.log("xxxxxx")
+        //    var TeacherId=0;
+
+        //    $("#StudentTeacher").change(function (TeacherId) {
+        //        var TeacherId = $(this).children("option:selected").val();
+        //        //var x = $(this).children("option:selected").val();
+        //        // alert("You have selected the country - " + TeacherId);
+        //        //return TeacherId;
+
+        //    },
+        //    );    
+
+        //    console.log(TeacherId);
+
+        //});
+        var studentId = $("#ID").val();
+
+
+        $("#Editform").submit(function (e) {
+           e.preventDefault();
+            console.log("in submit");
+            var TeacherId = $("#StudentTeacher").children("option:selected").val();
+
+            console.log(TeacherId);
+
+            $.ajax({
+                type: "POST",
+                url: "/Student/addTeachertostudent?TeacherId=%s&StudentId=%s",
+                data: { TeacherId: TeacherId, StudentId: studentId },
+                async: false,
+                success: function (data) {
+
+                }
+            });
+        });
+        //$("#Editform").submit({
+        //    function() {
+              
+        //    }
+
+        //})
+    </script>
+
+
+
+
+
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    //$(document).ready(function () {
+    //    console.log("xxxxxx")
+    //    $("#delNeighborhood").change(function () {
+    //        var selectedCountry = $(this).children("option:selected").val();
+    //        alert("You have selected the country - " + selectedCountry);
+    //    });
+    //});
+    
+</script>
